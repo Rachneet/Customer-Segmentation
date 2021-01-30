@@ -11,6 +11,13 @@ import matplotlib.pyplot as plt
 
 
 def preprocess_data(df, mode='train', process_outliers=True, impute=False):
+    """
+    :param df: dataframe to be cleaned
+    :param mode: process data for train or test
+    :param process_outliers: bool value for outlier processing
+    :param impute: bool value for imputing missing data
+    :return: imputed_df: cleaned dataframe
+    """
     if 'Unnamed: 0' in df.columns:
         df.drop('Unnamed: 0', axis=1, inplace=True)
 
@@ -112,7 +119,13 @@ def preprocess_data(df, mode='train', process_outliers=True, impute=False):
 
 
 def get_feature_importance(X, y, params, plot=True):
-
+    """
+    :param X: array of training features
+    :param y: array of target variable
+    :param params: dict of model parameters
+    :param plot: boolean value for plotting the chart
+    :return: features_df: dataframe with feature importance values
+    """
     model = xgb.XGBClassifier(**params)
     model.fit(X, y)
 
@@ -135,6 +148,12 @@ def get_feature_importance(X, y, params, plot=True):
 
 
 def get_shapely_features(X, y, params):
+    """
+    :param X: array of training features
+    :param y: array of target variable
+    :param params: dict of model parameters
+    :return:
+    """
 
     model = xgb.XGBClassifier(**params)
     model.fit(X, y)
