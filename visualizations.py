@@ -4,6 +4,14 @@ import plotly
 
 
 def update_axis(fig, axis, dtick=None, title=None, fontsize=15):
+    """
+    :param fig: plotly figure object
+    :param axis: axis to modify 'x' or 'y'
+    :param dtick: integer value for tick spacing
+    :param title: axis title
+    :param fontsize: label font size
+    :return: None
+    """
     if axis == 'x':
         fig.update_xaxes(
             showline=True,
@@ -46,6 +54,15 @@ def update_axis(fig, axis, dtick=None, title=None, fontsize=15):
 
 
 def update_layout(fig, title=None, width=None, height=None, plotbg='rgba(0,0,0,0)', showlegend=False):
+    """
+    :param fig: plotly figure object
+    :param title: title of the plot
+    :param width: plot width
+    :param height: plot height
+    :param plotbg: plot background color
+    :param showlegend: boolean value to show legend or hide it
+    :return:
+    """
     fig.update_layout(
         title_text=title,
         # margin=dict(b=260, l=0, r=150, t=20), # for small boxes
@@ -76,10 +93,24 @@ def update_layout(fig, title=None, width=None, height=None, plotbg='rgba(0,0,0,0
 
 
 def save_fig(fig, figname, width=None, height=None):
+    """
+    :param fig: plotly figure object
+    :param figname: name of saved figure
+    :param width: figure width
+    :param height: figure height
+    :return:
+    """
     plotly.offline.plot(figure_or_data=fig, image_width=width, image_height=height, filename=figname, image='svg')
 
 
-def draw_comparison_chart(x, y1, y2):
+def draw_comparison_chart(x, y1, y2, save=False):
+    """
+    :param x: array values for the x axis
+    :param y1: array values for the y axis
+    :param y2: array values for the y axis
+    :param save: boolean value stating whether to save the plot or not
+    :return: None
+    """
     fig = go.Figure()
     fig.add_trace(go.Bar(
         x=x,
@@ -168,4 +199,5 @@ def draw_comparison_chart(x, y1, y2):
         )
     )
     fig.show()
-    plotly.offline.plot(figure_or_data=fig, filename='cluster_pop.html', image='svg')
+    if save:
+        plotly.offline.plot(figure_or_data=fig, filename='cluster_pop.html', image='svg')
