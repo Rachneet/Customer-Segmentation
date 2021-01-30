@@ -68,7 +68,7 @@ def update_layout(fig, title=None, width=None, height=None, plotbg='rgba(0,0,0,0
         # margin=dict(b=260, l=0, r=150, t=20), # for small boxes
         #         margin=dict(b=350, l=0, r=200, t=20),  # normal
         title_x=0.50,
-        title_y=0.90,
+        # title_y=0.90,
         paper_bgcolor='white',
         plot_bgcolor=plotbg,
         showlegend=showlegend,
