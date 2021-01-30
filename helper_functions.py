@@ -5,6 +5,7 @@ from tqdm import tqdm
 import itertools
 from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import SimpleImputer
+from sklearn.cluster import KMeans
 
 import plotly
 import plotly.graph_objects as go
@@ -234,42 +235,6 @@ def get_similar_value_cols(df, percent=90):
     return sim_val_cols
 
 
-def create_features_from_lebensphase(df, column):
-    life_stage = {1: 'younger_age', 2: 'middle_age', 3: 'younger_age',
-                  4: 'middle_age', 5: 'advanced_age', 6: 'retirement_age',
-                  7: 'advanced_age', 8: 'retirement_age', 9: 'middle_age',
-                  10: 'middle_age', 11: 'advanced_age', 12: 'retirement_age',
-                  13: 'advanced_age', 14: 'younger_age', 15: 'advanced_age',
-                  16: 'advanced_age', 17: 'middle_age', 18: 'younger_age',
-                  19: 'advanced_age', 20: 'advanced_age', 21: 'middle_age',
-                  22: 'middle_age', 23: 'middle_age', 24: 'middle_age',
-                  25: 'middle_age', 26: 'middle_age', 27: 'middle_age',
-                  28: 'middle_age', 29: 'younger_age', 30: 'younger_age',
-                  31: 'advanced_age', 32: 'advanced_age', 33: 'younger_age',
-                  34: 'younger_age', 35: 'younger_age', 36: 'advanced_age',
-                  37: 'advanced_age', 38: 'retirement_age', 39: 'middle_age',
-                  40: 'retirement_age'}
-
-    fine_scale = {1: 'low', 2: 'low', 3: 'average', 4: 'average', 5: 'low', 6: 'low',
-                  7: 'average', 8: 'average', 9: 'average', 10: 'wealthy', 11: 'average',
-                  12: 'average', 13: 'top', 14: 'average', 15: 'low', 16: 'average',
-                  17: 'average', 18: 'wealthy', 19: 'wealthy', 20: 'top', 21: 'low',
-                  22: 'average', 23: 'wealthy', 24: 'low', 25: 'average', 26: 'average',
-                  27: 'average', 28: 'top', 29: 'low', 30: 'average', 31: 'low',
-                  32: 'average', 33: 'average', 34: 'average', 35: 'top', 36: 'average',
-                  37: 'average', 38: 'average', 39: 'top', 40: 'top'}
-
-    df['LP_LEBENSPHASE_FEIN_AGE'] = df[column].map(life_stage)
-    df['LP_LEBENSPHASE_FEIN_INCOME'] = df[column].map(fine_scale)
-    cols = ['LP_LEBENSPHASE_FEIN_AGE', 'LP_LEBENSPHASE_FEIN_INCOME']
-    for col in cols:
-        le_status = LabelEncoder()
-        fit_col = pd.Series([i for i in df.loc[:, col].unique() if type(i) == str])
-        le_status.fit(fit_col)
-        df[col] = df[col].map(lambda x: le_status.transform([x])[0] if type(x) == str else x)
-    # df.drop(column, axis=1, inplace=True)
-    print('Created lebensphase features')
-
 
 def create_youth_movement_features(df):
     """
@@ -369,6 +334,30 @@ def bin_column(df, column, bins, labels, include_lowest=True, right=True):
     values = pd.cut(df[column], bins=bins, labels=labels, include_lowest=include_lowest, right=right).values
     df[column] = values
     print("Binned ", column)
+
+
+def select_best_k(df):
+    """
+    :param df: inpur data in the form of a dataframe
+    :return: scores: list of sse scores with different k values
+    """
+
+    scores = []
+    num_clusters = np.arange(1, 16)
+    for n_cluster in tqdm(num_clusters, position=0, leave=True):
+        kmeans = KMeans(init='k-means++', n_clusters=n_cluster)
+        # fit to 35 components which explain 95% variability
+        kmeans.fit_predict(df)
+        sse = kmeans.inertia_
+
+        #         preds = kmeans.predict(reduced_df)
+        #         score = silhouette_score(reduced_df, preds, metric='euclidean')
+        #         print("Silhoutte score: ", score)
+
+        print("SSE:", sse)
+        scores.append(sse)
+
+    return scores
 
 
 # test your functions here
