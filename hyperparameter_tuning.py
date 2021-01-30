@@ -25,6 +25,12 @@ N_FOLDS = 5  # Number of folds for CV
 
 def simple_tuner(X, y):
 
+    """
+    :param X: array of training features
+    :param y: array of target variable
+    :return:
+    """
+
     def train_evaluate(X, y, all_params):
         X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=4)
         # i'll be using under the hood api of xgboost :)
@@ -72,6 +78,11 @@ def simple_tuner(X, y):
 
 
 def cv_tuner(X, y):
+    """
+    :param X: array of training features
+    :param y: array of target label
+    :return: None
+    """
 
     def train_evaluate(X, y, params):
 
