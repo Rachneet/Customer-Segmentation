@@ -3,3 +3,9 @@ tutorial/
 
 # datasets
 data/
+
+# csv files
+*.csv
+
+# images
+*.html
